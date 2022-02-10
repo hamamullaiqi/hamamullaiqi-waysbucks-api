@@ -22,6 +22,62 @@ exports.getUsers = async (req,res) => {
     }
 }
 
+exports.getUser = async (req, res) => {
+    try {
+
+        const { id } = req.params
+        const dataUser = await user.findOne({
+            where : {
+                id
+            }
+        })
+
+        res.send({
+            status: "success",
+            message : `User by id : ${id} `,
+            dataUser : {
+                fullname : dataUser.fullname,
+                email : dataUser.email
+            }
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    
+        
+    }
+}
+
+exports.updateUser = async (req, res) => {
+    try {
+
+        const { id } = req.params
+        const data = req.body
+        await user.update(data, {
+            where  : {
+                id
+            }
+        })
+
+        res.send({
+            status: "success",
+            message : `update user by id: ${id} success` 
+
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
+
 exports.addUsers = async (req,res) => {
     try {
 
