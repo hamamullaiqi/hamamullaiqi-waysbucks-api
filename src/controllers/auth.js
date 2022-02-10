@@ -32,6 +32,13 @@ exports.register = async (req,res) => {
 
         })
 
+        if(newUser.email === req.body.email){
+            return res.status(400).send({
+                status:"failed",
+                message: "User already exists"
+            })
+        }
+
         res.status(201).send({
             status: "success",
             message : "Register Succeess",
