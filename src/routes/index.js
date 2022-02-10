@@ -6,6 +6,11 @@ const { register, login } = require("../controllers/auth")
 const router = express.Router()
 
 
+//middleware
+
+const {auth} = require("../middlewares/auth")
+
+
 
 router.get("/users", getUsers)
 router.get("/user/:id", getUser)
@@ -16,5 +21,5 @@ router.delete("/user/:id", deleteUser)
 
 //auth 
 router.post("/register", register)
-router.post("/login", login)
+router.post("/login", auth, login)
 module.exports = router

@@ -2,6 +2,10 @@ const { user } = require("../../models")
 
 const Joi = require('joi')
 
+const bcrypt = require("bcrypt")
+
+const jwt = require('jsonwebtoken')
+
 
 exports.register = async (req,res) => {
     
@@ -22,33 +26,49 @@ exports.register = async (req,res) => {
             }
         })
 
-
+    
     try {
+        //time bcrypt
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-        const newUser = await user.create({
-            fullname : req.body.fullname,
-            email : req.body.email,
-            password : req.body.password,
+        //validate user exits
+        const userExist = await user.findOne({
+            where: {
+                email : req.body.email
+            },
+        })
+
+
+        if( !userExist ){
+            const newUser = await user.create({
+                fullname : req.body.fullname,
+                email : req.body.email,
+                password : hashedPassword,
+
+            })
+
+            const SECRET_KEY = 'bebas'
+            const token = jwt.sign({id : newUser.id}, SECRET_KEY)
+            res.status(201).send({
+                status: "success",
+                message : "Register Succeess",
+                data :  {
+                    user : {
+                        fullname: newUser.fullname,
+                        token
+                    }
+                }
 
         })
 
-        if(newUser.email === req.body.email){
-            return res.status(400).send({
+        } else {
+            return  res.status(400).send({
                 status:"failed",
                 message: "User already exists"
             })
         }
-
-        res.status(201).send({
-            status: "success",
-            message : "Register Succeess",
-            data : {
-                name: newUser.name,
-                email : newUser.email
-            }
-
-        })
-        
+    
     } catch (error) {
         console.log(error);
         res.send({
@@ -95,7 +115,10 @@ exports.login = async (req,res) => {
                 message: "email & password not match"
             })
         }
-        if(userExist.password !== req.body.password){
+
+        const isValid = bcrypt.compare(req.body.password, userExist.password)
+
+        if(!isValid){
             return res.status(400).send({
                 status: "failed",
                 message: "email & password not match"
@@ -103,12 +126,23 @@ exports.login = async (req,res) => {
         }
 
 
+        // if(userExist.password !== req.body.password){
+        //     return res.status(400).send({
+        //         status: "failed",
+        //         message: "email & password not match"
+        //     })
+        // }
+
+        const SECRET_KEY = 'bebas'
+        const token = jwt.sign({id : userExist.id}, SECRET_KEY)
+
         res.status(200).send({
             status: "success",
             message : "Login Success",
             data: {
                 fullname: userExist.fullname,
-                email : userExist.email
+                email : userExist.email,
+                token
             }
         })
 
