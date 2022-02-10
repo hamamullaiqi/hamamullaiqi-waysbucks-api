@@ -1,7 +1,7 @@
 const express = require('express')
 const { getUsers,  addUsers, deleteUser, getUser, updateUser } = require('../controllers/user')
 
-const { register } = require("../controllers/auth")
+const { register, login } = require("../controllers/auth")
 
 const router = express.Router()
 
@@ -16,4 +16,5 @@ router.delete("/user/:id", deleteUser)
 
 //auth 
 router.post("/register", register)
+router.post("/login", login)
 module.exports = router
