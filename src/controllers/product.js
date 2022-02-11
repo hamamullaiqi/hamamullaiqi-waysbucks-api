@@ -1,4 +1,7 @@
 const { product } = require("../../models")
+const path = require("path")
+const fs = require("fs")
+const { error } = require("console")
 
 exports.getProducts = async (req, res) => {
     try {
@@ -75,12 +78,16 @@ exports.addProduct = async (req, res) => {
 
     try {
 
-         
-
-        let newProduct = await product.create({
+        const dataCreate = {
             title : req.body.title,
             price : req.body.price,
-            image : req.file.filename,
+            image : req.file.filename
+        }
+
+         
+
+        let newProduct = await product.create(dataCreate,{ 
+            ...dataCreate
         }) 
 
         newProduct = JSON.parse(JSON.stringify(newProduct))
@@ -112,20 +119,107 @@ exports.addProduct = async (req, res) => {
         
 }
 
+exports.updateProduct= async (req, res) => {
+    try {
+
+        const { id } = req.params
+        const dataUpdate = {
+            title : req.body.title,
+            price : req.body.price,
+            image : req.file.filename
+        }
+        
+
+         let updateProduct = await product.update(dataUpdate, {
+            where : {
+                id
+            },
+            ...dataUpdate,
+            
+        })
+
+        updateProduct = JSON.parse(JSON.stringify(updateProduct))
+
+        updateProduct = {
+            ...dataUpdate,
+            image : process.env.FILE_PATH + updateProduct.image
+        }
+
+
+        const data = await product.findOne({
+            where : {
+                id
+            },
+            
+            attributes : {
+                exclude : ["updatedAt", "createdAt"]
+            }
+            
+        }) 
+
+        res.send({
+            status : "success",
+            message : `Update product by id: ${id} success`,
+            data : {
+                product : data
+            }
+        })
+        
+    } catch (error) {
+
+        console.log(error);
+        res.status(500).send({
+            status: "failed",
+            message: "Server Error",
+        });
+        
+    }
+}
+
 exports.deleteProduct = async (req, res) => {
 
     try {
         const { id } = req.params
-
-        const data = await product.destroy({
+        const data = await product.findOne({
             where : {
                 id
-            }
+            },
+            
+        }) 
+        if(!data)
+        return res.status(404).send({
+            message : "Product Not Found"
         })
+
+        const removeImage = (filePath)=> {
+            //menggabungkan direktori controller , uploads dan nama file product
+            
+            filePath = path.join(__dirname, "../../uploads", filePath)
+            fs.unlink(filePath, err => console.log(err))
+        }
+
+
+        removeImage(data.image)
+
+        
+        
+
+        
+
+        const deleteData = await product.destroy({
+            where : {
+                id,
+                
+            },
+            
+        })
+        
+       
 
         res.send({
             status : "seccess",
-            message : `Delete Product by id : ${id}`
+            message : `Delete Product by id : ${id}`,
+            data : {data}
         })
         
     } catch (error) {
