@@ -8,6 +8,15 @@ exports.getProducts = async (req, res) => {
             }
         })
 
+        // data = JSON.parse(JSON.stringify(data))
+
+        // data = data.map((item) => {
+        //     return {
+        //         ...item,
+        //         image: process.env.FILE_PATH + item.image
+        //     }
+        // })
+
         res.send({
             status : "success",
             data : {
@@ -60,4 +69,74 @@ exports.getProduct = async (req, res) => {
             message: 'Server Error'
         })
     }
+}
+
+exports.addProduct = async (req, res) => {
+
+    try {
+
+         
+
+        let newProduct = await product.create({
+            title : req.body.title,
+            price : req.body.price,
+            image : req.file.filename,
+        }) 
+
+        newProduct = JSON.parse(JSON.stringify(newProduct))
+
+        newProduct = {
+            title : req.body.title,
+            price : req.body.price,
+            image : process.env.FILE_PATH + newProduct.image
+        }
+
+        res.send({
+            status: 'success',
+            data: {
+              newProduct
+            }
+      
+          })
+
+        
+      
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            status: "failed",
+            message: "Server Error",
+        });
+    }
+        
+}
+
+exports.deleteProduct = async (req, res) => {
+
+    try {
+        const { id } = req.params
+
+        const data = await product.destroy({
+            where : {
+                id
+            }
+        })
+
+        res.send({
+            status : "seccess",
+            message : `Delete Product by id : ${id}`
+        })
+        
+    } catch (error) {
+
+        console.log(error);
+        res.status(500).send({
+            status: "failed",
+            message: "Server Error",
+        });
+        
+    }
+
+    
 }
