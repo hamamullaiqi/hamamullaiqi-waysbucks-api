@@ -11,8 +11,8 @@ const router = express.Router()
 const {auth} = require("../middlewares/auth")
 const { getProducts, getProduct, addProduct, deleteProduct, updateProduct } = require('../controllers/product')
 const { uploadFile } = require('../middlewares/uploadFile')
-const { route } = require('express/lib/application')
-const { getTopings } = require('../controllers/toping')
+
+const { getToppings, getTopping, addTopping, updateTopping, deleteTopping } = require('../controllers/topping')
 
 
 
@@ -37,5 +37,10 @@ router.patch("/product/:id", uploadFile("image"), auth, updateProduct)
 
 
 //route toping
-router.get("/topings", auth, getTopings)
+router.get("/toppings", auth, getToppings)
+router.get("/topping/:id", auth, getTopping)
+router.post("/topping", auth, uploadFile("image"), addTopping)
+router.patch("/topping/:id", auth, uploadFile("image"), updateTopping)
+router.delete("/topping/:id", auth, deleteTopping)
+
 module.exports = router

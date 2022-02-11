@@ -1,40 +1,33 @@
-const { product } = require("../../models")
+const { topping } = require("../../models")
 const path = require("path")
 const fs = require("fs")
-const { error } = require("console")
 
-exports.getProducts = async (req, res) => {
+exports.getToppings = async (req, res) => {
     try {
-        const dataProducts = await product.findAll({
+
+        const dataToppings = await topping.findAll({
             attributes : {
-                exclude : ["createdAt", "updatedAt"]
+                exclude : ["createdAt", "updateAt"]
             }
         })
 
-        if(dataProducts == "")
+        if(dataToppings == "")
         return res.status(404).send({
             message : "Toping Not Found"
         })
 
-        // data = JSON.parse(JSON.stringify(data))
-
-        // data = data.map((item) => {
-        //     return {
-        //         ...item,
-        //         image: process.env.FILE_PATH + item.image
-        //     }
-        // })
 
         res.send({
             status : "success",
             data : {
-                products : 
-                    dataProducts,
+                topping : 
+                    dataToppings,
                 
             },
             
            
         })
+        
         
     } catch (error) {
         console.log(error)
@@ -42,33 +35,41 @@ exports.getProducts = async (req, res) => {
             status: 'failed',
             message: 'Server Error'
         })
+        
     }
 }
 
-exports.getProduct = async (req, res) => {
+exports.getTopping = async (req, res) => {
     try {
 
         const { id } = req.params
-        const data = await product.findOne({
+
+        const dataTopping = await topping.findOne({
             where : {
                 id
             },
             attributes : {
-                exclude : ["createdAt", "updatedAt"]
+                exclude : ["createdAt", "updateAt"]
             }
         })
 
+        if(dataTopping == "")
+        return res.status(404).send({
+            message : "Toping Not Found"
+        })
+
+
         res.send({
             status : "success",
-            message : `Product by id : ${id} `,
             data : {
-                products : 
-                    data,
+                toping : 
+                    dataTopping,
                 
             },
             
            
         })
+        
         
     } catch (error) {
         console.log(error)
@@ -76,10 +77,10 @@ exports.getProduct = async (req, res) => {
             status: 'failed',
             message: 'Server Error'
         })
+        
     }
 }
-
-exports.addProduct = async (req, res) => {
+exports.addTopping = async (req, res) => {
 
     try {
 
@@ -91,22 +92,22 @@ exports.addProduct = async (req, res) => {
 
          
 
-        let newProduct = await product.create(dataCreate,{ 
+        let newTopping = await topping.create(dataCreate,{ 
             ...dataCreate
         }) 
 
-        newProduct = JSON.parse(JSON.stringify(newProduct))
+        newTopping = JSON.parse(JSON.stringify(newTopping))
 
-        newProduct = {
+        newTopping = {
             title : req.body.title,
             price : req.body.price,
-            image : process.env.FILE_PATH + newProduct.image
+            image : process.env.FILE_PATH + newTopping.image
         }
 
         res.send({
             status: 'success',
             data: {
-              newProduct
+              newTopping
             }
       
           })
@@ -123,8 +124,7 @@ exports.addProduct = async (req, res) => {
     }
         
 }
-
-exports.updateProduct= async (req, res) => {
+exports.updateTopping= async (req, res) => {
     try {
 
         const { id } = req.params
@@ -135,7 +135,7 @@ exports.updateProduct= async (req, res) => {
         }
         
 
-         let updateProduct = await product.update(dataUpdate, {
+         let updateTopping = await topping.update(dataUpdate, {
             where : {
                 id
             },
@@ -143,15 +143,15 @@ exports.updateProduct= async (req, res) => {
             
         })
 
-        updateProduct = JSON.parse(JSON.stringify(updateProduct))
+        updateTopping = JSON.parse(JSON.stringify(updateTopping))
 
-        updateProduct = {
+        updateTopping = {
             ...dataUpdate,
-            image : process.env.FILE_PATH + updateProduct.image
+            image : process.env.FILE_PATH + updateTopping.image
         }
 
 
-        const data = await product.findOne({
+        const data = await topping.findOne({
             where : {
                 id
             },
@@ -164,9 +164,9 @@ exports.updateProduct= async (req, res) => {
 
         res.send({
             status : "success",
-            message : `Update product by id: ${id} success`,
+            message : `Update topping by id: ${id} success`,
             data : {
-                product : data
+                Topping : data
             }
         })
         
@@ -180,38 +180,37 @@ exports.updateProduct= async (req, res) => {
         
     }
 }
-
-exports.deleteProduct = async (req, res) => {
+exports.deleteTopping = async (req, res) => {
 
     try {
         const { id } = req.params
-        const data = await product.findOne({
+        const dataTopping = await topping.findOne({
             where : {
                 id
             },
             
         }) 
-        if(!data)
+        if(!dataTopping)
         return res.status(404).send({
-            message : "Product Not Found"
+            message : "Topping Not Found"
         })
 
         const removeImage = (filePath)=> {
-            //menggabungkan direktori controller , uploads dan nama file product
+            //menggabungkan direktori controller , uploads dan nama file Topping
             
             filePath = path.join(__dirname, "../../uploads", filePath)
             fs.unlink(filePath, err => console.log(err))
         }
 
 
-        removeImage(data.image)
+        removeImage(dataTopping.image)
 
         
         
 
         
 
-        const deleteData = await product.destroy({
+        const deleteData = await topping.destroy({
             where : {
                 id,
                 
@@ -223,8 +222,8 @@ exports.deleteProduct = async (req, res) => {
 
         res.send({
             status : "seccess",
-            message : `Delete Product by id : ${id}`,
-            data : {data}
+            message : `Delete Topping by id : ${id}`,
+            data : {dataTopping}
         })
         
     } catch (error) {
