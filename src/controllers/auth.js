@@ -140,10 +140,12 @@ exports.login = async (req,res) => {
             status: "success",
             message : "Login Success",
             data: {
-                fullname: userExist.fullname,
-                email : userExist.email,
-                token
-            }
+                user : {
+                    fullname: userExist.fullname,
+                    email : userExist.email,
+                    token
+                }
+            } 
         })
 
     } catch (error) {

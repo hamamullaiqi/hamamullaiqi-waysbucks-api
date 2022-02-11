@@ -4,12 +4,17 @@ const {user} = require("../../models")
 exports.getUsers = async (req,res) => {
     try {
 
-        const users = await user.findAll()
+        const users = await user.findAll({
+            attributes : {
+                exclude : ["createdAt", "updatedAt", "password"]
+            }
+        })
 
         res.send({
             status:"success",
             data: {
-                users
+                users,
+                
             }
         })
         
