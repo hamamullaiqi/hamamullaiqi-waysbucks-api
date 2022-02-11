@@ -128,6 +128,29 @@ exports.updateTopping= async (req, res) => {
     try {
 
         const { id } = req.params
+
+        const dataTopping = await topping.findOne({
+            where : {
+                id
+            },
+            
+        }) 
+        if(!dataTopping)
+        return res.status(404).send({
+            message : "Toping Not Found"
+        })
+
+        const replaceImageToping = (filePath)=> {
+            //menggabungkan direktori controller , uploads dan nama file Product
+            
+            filePath = path.join(__dirname, "../../uploads", filePath)
+            fs.unlink(filePath, function (err) {console.log(err)})
+        }
+
+
+        replaceImageToping(dataTopping.image)
+
+
         const dataUpdate = {
             title : req.body.title,
             price : req.body.price,

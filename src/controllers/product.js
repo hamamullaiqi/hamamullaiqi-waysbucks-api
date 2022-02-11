@@ -49,7 +49,7 @@ exports.getProduct = async (req, res) => {
     try {
 
         const { id } = req.params
-        const data = await product.findOne({
+        const dataProduct = await product.findOne({
             where : {
                 id
             },
@@ -63,7 +63,7 @@ exports.getProduct = async (req, res) => {
             message : `Product by id : ${id} `,
             data : {
                 products : 
-                    data,
+                    dataProduct,
                 
             },
             
@@ -128,6 +128,28 @@ exports.updateProduct= async (req, res) => {
     try {
 
         const { id } = req.params
+
+        const dataProduct = await product.findOne({
+            where : {
+                id
+            },
+            
+        }) 
+        if(!dataProduct)
+        return res.status(404).send({
+            message : "Product Not Found"
+        })
+
+        const replaceFile = (filePath)=> {
+            //menggabungkan direktori controller , uploads dan nama file Product
+            
+            filePath = path.join(__dirname, "../../uploads", filePath)
+            fs.unlink( filePath, (err) => console.log(err))
+        }
+
+
+        replaceFile(dataProduct.image)
+
         const dataUpdate = {
             title : req.body.title,
             price : req.body.price,
