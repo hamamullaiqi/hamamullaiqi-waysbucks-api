@@ -1,10 +1,20 @@
-const {user} = require("../../models")
+const {user, profile} = require("../../models")
+const path = require('path')
+const fs = require("fs")
 
 
 exports.getUsers = async (req,res) => {
     try {
 
         const users = await user.findAll({
+            include : {
+                model: profile,
+                as: "profile",
+                attributes : {
+                    exclude : ["createdAt", "updatedAt", "idUser", "id"]
+                }
+            },
+            
             attributes : {
                 exclude : ["createdAt", "updatedAt", "password"]
             }
@@ -14,6 +24,7 @@ exports.getUsers = async (req,res) => {
             status:"success",
             data: {
                 users,
+                
                 
             }
         })
@@ -34,6 +45,17 @@ exports.getUser = async (req, res) => {
         const dataUser = await user.findOne({
             where : {
                 id
+            },
+            include : {
+                model: profile,
+                as: "profile",
+                attributes : {
+                    exclude : ["createdAt", "updatedAt", "idUser", "id"]
+                }
+            },
+            
+            attributes : {
+                exclude : ["createdAt", "updatedAt", "password"]
             }
         })
 
@@ -41,8 +63,11 @@ exports.getUser = async (req, res) => {
             status: "success",
             message : `User by id : ${id} `,
             dataUser : {
+                id : dataUser.id,
                 fullname : dataUser.fullname,
-                email : dataUser.email
+                email : dataUser.email,
+                profile : dataUser.profile.image,
+                
             }
         })
         
@@ -61,12 +86,57 @@ exports.updateUser = async (req, res) => {
     try {
 
         const { id } = req.params
-        const data = req.body
-        await user.update(data, {
+
+        const dataUser = await user.findOne({
+            where : {
+                id
+            },
+            include : {
+                model: profile,
+                as: "profile",
+                attributes : {
+                    exclude : ["createdAt", "updatedAt", "idUser", "id"]
+                }
+            },
+            
+        }) 
+        
+        
+        if(!dataUser)
+        return res.status(404).send({
+            message : "User Not Found"
+        })
+
+        const replaceFile = (filePath)=> {
+            //menggabungkan direktori controller , uploads dan nama file Product
+            
+            filePath = path.join(__dirname, "../../uploads", filePath)
+            fs.unlink( filePath, (err) => console.log(err))
+        }
+
+
+        replaceFile(dataUser.profile.image)
+        
+
+        const dataUpdate = {
+            image : req.file.filename
+        }
+  
+        let updateProfileUser = await profile.update(dataUpdate, {
             where  : {
                 id
+            }, 
+            ...dataUpdate,
+            attributes : {
+                exclude : ["createdAt", "updateAt"]
             }
         })
+        updateProfileUser = JSON.parse(JSON.stringify(updateProfileUser))
+
+        updateProfileUser = {
+            ...dataUpdate,
+            image : process.env.FILE_PATH + updateProfileUser.image
+        }
 
         res.send({
             status: "success",
@@ -93,8 +163,12 @@ exports.addUsers = async (req,res) => {
             status:"success",
             message: "Add User success",
             data: {
-                dataUser
-            }
+                dataUser,
+                attributes : {
+                    exclude : ["createdAt", "updateAt"]
+                }
+            },
+            
         })
         
     } catch (error) {

@@ -14,10 +14,7 @@ exports.auth =(req, res, next) => {
     }
 
     try {
-
-        const SECRET_KEY = 'bebas'
-
-        const verified = jwt.verify(token, SECRET_KEY)
+        const verified = jwt.verify(token, process.env.TOKEN_KEY)
         req.user = verified
         next()
         

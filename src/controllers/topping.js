@@ -7,7 +7,7 @@ exports.getToppings = async (req, res) => {
 
         const dataToppings = await topping.findAll({
             attributes : {
-                exclude : ["createdAt", "updateAt"]
+                exclude : ["createdAt", "updatedAt"]
             }
         })
 
@@ -49,7 +49,7 @@ exports.getTopping = async (req, res) => {
                 id
             },
             attributes : {
-                exclude : ["createdAt", "updateAt"]
+                exclude : ["createdAt", "updatedAt"]
             }
         })
 
@@ -246,7 +246,9 @@ exports.deleteTopping = async (req, res) => {
         res.send({
             status : "seccess",
             message : `Delete Topping by id : ${id}`,
-            data : {dataTopping}
+            data : {
+                id: dataTopping.id
+            }
         })
         
     } catch (error) {

@@ -13,7 +13,7 @@ exports.getProducts = async (req, res) => {
 
         if(dataProducts == "")
         return res.status(404).send({
-            message : "Toping Not Found"
+            message : "Product Not Found"
         })
 
         // data = JSON.parse(JSON.stringify(data))
@@ -62,7 +62,7 @@ exports.getProduct = async (req, res) => {
             status : "success",
             message : `Product by id : ${id} `,
             data : {
-                products : 
+                product : 
                     dataProduct,
                 
             },
@@ -103,10 +103,13 @@ exports.addProduct = async (req, res) => {
             image : process.env.FILE_PATH + newProduct.image
         }
 
+        
+
         res.send({
             status: 'success',
             data: {
-              newProduct
+                
+                newProduct
             }
       
           })
@@ -246,7 +249,9 @@ exports.deleteProduct = async (req, res) => {
         res.send({
             status : "seccess",
             message : `Delete Product by id : ${id}`,
-            data : {data}
+            data : {
+                id : data.id
+            }
         })
         
     } catch (error) {

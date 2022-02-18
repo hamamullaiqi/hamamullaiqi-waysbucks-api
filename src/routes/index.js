@@ -1,7 +1,7 @@
 const express = require('express')
 const { getUsers,  addUsers, deleteUser, getUser, updateUser } = require('../controllers/user')
 
-const { register, login } = require("../controllers/auth")
+const { register, login, checkAuth } = require("../controllers/auth")
 
 const router = express.Router()
 
@@ -13,19 +13,23 @@ const { getProducts, getProduct, addProduct, deleteProduct, updateProduct } = re
 const { uploadFile } = require('../middlewares/uploadFile')
 
 const { getToppings, getTopping, addTopping, updateTopping, deleteTopping } = require('../controllers/topping')
+const { getProfiles, getProfile, addProfile } = require('../controllers/profile')
+const { getTransactions, getTransaction } = require('../controllers/transaction')
+const { getOrderDetails } = require('../controllers/order_detail')
 
 
 
 router.get("/users", getUsers)
 router.get("/user/:id", getUser)
-router.patch("/user/:id", updateUser)
+router.patch("/user/:id", auth,uploadFile("image"),  updateUser)
 router.post("/user", addUsers)
 router.delete("/user/:id", deleteUser)
 
 
 //auth 
 router.post("/register", register)
-router.post("/login", auth, login)
+router.post("/login", login)
+router.get("/check-auth", auth, checkAuth)
 
 //route product
 router.get("/products", auth, getProducts)
@@ -42,5 +46,26 @@ router.get("/topping/:id", auth, getTopping)
 router.post("/topping", auth, uploadFile("image"), addTopping)
 router.patch("/topping/:id", auth, uploadFile("image"), updateTopping)
 router.delete("/topping/:id", auth, deleteTopping)
+
+
+
+//route profile
+
+router.get("/profiles", auth, getProfiles)
+router.get("/profile/:id", auth, getProfile)
+router.post("/profile/:id", auth, uploadFile("image"), addProfile)
+
+
+
+//router transaction
+
+router.get("/transactions/:id", auth, getTransactions)
+router.get("/transaction/:id", auth, getTransaction)
+
+
+
+
+
+
 
 module.exports = router

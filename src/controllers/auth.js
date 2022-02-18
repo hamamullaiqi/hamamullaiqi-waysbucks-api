@@ -1,5 +1,7 @@
 const { user } = require("../../models")
 
+
+
 const Joi = require('joi')
 
 const bcrypt = require("bcrypt")
@@ -45,11 +47,12 @@ exports.register = async (req,res) => {
                 fullname : req.body.fullname,
                 email : req.body.email,
                 password : hashedPassword,
+                status : "customer",
 
             })
 
-            const SECRET_KEY = 'bebas'
-            const token = jwt.sign({id : newUser.id}, SECRET_KEY)
+            
+            const token = jwt.sign({id : newUser.id}, process.env.TOKEN_KEY )
             res.status(201).send({
                 status: "success",
                 message : "Register Succeess",
@@ -133,8 +136,8 @@ exports.login = async (req,res) => {
         //     })
         // }
 
-        const SECRET_KEY = 'bebas'
-        const token = jwt.sign({id : userExist.id}, SECRET_KEY)
+       
+        const token = jwt.sign({id : userExist.id}, process.env.TOKEN_KEY)
 
         res.status(200).send({
             status: "success",
@@ -143,6 +146,7 @@ exports.login = async (req,res) => {
                 user : {
                     fullname: userExist.fullname,
                     email : userExist.email,
+                    status : userExist.status,
                     token
                 }
             } 
@@ -157,3 +161,42 @@ exports.login = async (req,res) => {
         
     }
 }
+
+exports.checkAuth = async (req, res) => {
+    try {
+      const id = req.user.id;
+  
+      const dataUser = await user.findOne({
+        where: {
+          id,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "password"],
+        },
+      });
+  
+      if (!dataUser) {
+        return res.status(404).send({
+          status: "failed",
+        });
+      }
+  
+      res.send({
+        status: "success...",
+        data: {
+          user: {
+            id: dataUser.id,
+            name: dataUser.name,
+            email: dataUser.email,
+            status: dataUser.status,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      res.status({
+        status: "failed",
+        message: "Server Error",
+      });
+    }
+  };

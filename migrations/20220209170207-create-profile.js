@@ -9,11 +9,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       idUser: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          as : "user",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      
+      image: {
         type: Sequelize.STRING
       },
-      img: {
-        type: Sequelize.STRING
-      },
+      
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
