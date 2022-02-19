@@ -5,7 +5,7 @@ const { error } = require("console")
 
 exports.getProducts = async (req, res) => {
     try {
-        const dataProducts = await product.findAll({
+        let dataProducts = await product.findAll({
             attributes : {
                 exclude : ["createdAt", "updatedAt"]
             }
@@ -16,14 +16,11 @@ exports.getProducts = async (req, res) => {
             message : "Product Not Found"
         })
 
-        // data = JSON.parse(JSON.stringify(data))
+        dataProducts = JSON.parse(JSON.stringify(dataProducts))
 
-        // data = data.map((item) => {
-        //     return {
-        //         ...item,
-        //         image: process.env.FILE_PATH + item.image
-        //     }
-        // })
+        dataProducts = dataProducts.map((item) => {
+            return {...item, image: process.env.FILE_PATH + item.image }
+        })
 
         res.send({
             status : "success",
