@@ -5,7 +5,7 @@ const fs = require("fs")
 exports.getToppings = async (req, res) => {
     try {
 
-        const dataToppings = await topping.findAll({
+        let dataToppings = await topping.findAll({
             attributes : {
                 exclude : ["createdAt", "updatedAt"]
             }
@@ -14,6 +14,12 @@ exports.getToppings = async (req, res) => {
         if(dataToppings == "")
         return res.status(404).send({
             message : "Toping Not Found"
+        })
+
+        dataToppings = JSON.parse(JSON.stringify(dataToppings))
+
+        dataToppings = dataToppings.map((item) => {
+            return {...item, image: process.env.FILE_PATH + item.image }
         })
 
 

@@ -32,7 +32,7 @@ router.post("/login", login)
 router.get("/check-auth", auth, checkAuth)
 
 //route product
-router.get("/products", auth, getProducts)
+router.get("/products", getProducts)
 router.get("/product/:id", auth, getProduct)
 router.post("/product", auth, uploadFile("image"), addProduct)
 router.delete("/product/:id", auth, deleteProduct)

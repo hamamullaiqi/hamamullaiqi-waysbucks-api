@@ -46,7 +46,7 @@ exports.getProduct = async (req, res) => {
     try {
 
         const { id } = req.params
-        const dataProduct = await product.findOne({
+        let dataProduct = await product.findOne({
             where : {
                 id
             },
@@ -54,6 +54,13 @@ exports.getProduct = async (req, res) => {
                 exclude : ["createdAt", "updatedAt"]
             }
         })
+
+        dataProduct = JSON.parse(JSON.stringify(dataProduct))
+
+        dataProduct = {
+            ...dataProduct, 
+            image: process.env.FILE_PATH + dataProduct.image }
+        
 
         res.send({
             status : "success",
