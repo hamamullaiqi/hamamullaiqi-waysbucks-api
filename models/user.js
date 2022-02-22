@@ -14,13 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       user.hasOne(models.profile, {
         as: "profile",
         foreignKey: {
-          name: "idUser",
+          name: "id_user",
         },
       });
       user.hasMany(models.transaction, {
-        as: "userTransaction",
+        as: "buyer",
         foreignKey: {
-          name: "userId",
+          name: "id_user",
         },
       });
       

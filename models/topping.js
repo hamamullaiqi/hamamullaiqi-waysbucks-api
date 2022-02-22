@@ -12,6 +12,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       
+        topping.hasMany(models.order_list, {
+          as: "toppings",
+          foreignKey: {
+            name: "id_topping",
+          },
+        });
+
+        
+  
     }
   }
   topping.init({

@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const order_detail = require('./order_detail');
 module.exports = (sequelize, DataTypes) => {
   class transaction extends Model {
     /**
@@ -13,23 +12,34 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       transaction.belongsTo(models.user, {
-        as: "user",
+        as: "buyer",
         foreignKey: {
-          name: "userId",
+          name: "id_user",
         },
       });
-      transaction.belongsTo(models.order_detail, {
+
+      transaction.hasMany(models.order_list, {
         as: "order",
         foreignKey: {
-          name: "orderId",
+          name: "id_order",
         },
       });
+
+
+
     }
   }
   transaction.init({
-    userId: DataTypes.INTEGER,
+    id_user: DataTypes.INTEGER,
+    id_order: DataTypes.INTEGER,
     status: DataTypes.STRING,
-    total_payment: DataTypes.INTEGER
+    total_pay: DataTypes.INTEGER,
+    attch_transaction: DataTypes.STRING,
+    fullname: DataTypes.STRING,
+    email: DataTypes.STRING,
+    phone: DataTypes.INTEGER,
+    poscode: DataTypes.INTEGER,
+    address: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'transaction',

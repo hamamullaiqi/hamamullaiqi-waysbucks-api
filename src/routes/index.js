@@ -15,7 +15,7 @@ const { uploadFile } = require('../middlewares/uploadFile')
 const { getToppings, getTopping, addTopping, updateTopping, deleteTopping } = require('../controllers/topping')
 const { getProfiles, getProfile, addProfile } = require('../controllers/profile')
 const { getTransactions, getTransaction } = require('../controllers/transaction')
-const { getOrderDetails } = require('../controllers/order_detail')
+
 
 
 

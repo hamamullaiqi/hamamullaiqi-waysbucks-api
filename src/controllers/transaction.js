@@ -23,7 +23,7 @@ exports.getTransactions= async (req, res) => {
             },
            
             
-            include : [
+            include : 
                 {
                     model: user,
                     as: "user",
@@ -32,24 +32,8 @@ exports.getTransactions= async (req, res) => {
                     }
                 },
             
-                {
-                    model: order_detail,
-                    as: "order",
-                    attributes : {
-                        exclude : ["createdAt", "updatedAt", "productId", "toppingId"]
-                    },
                 
-                        include : 
-                            { 
-                                model: product,
-                                as: "product",
-                                attributes : {
-                                    exclude : ["createdAt", "updatedAt"]
-                                },
-                            }
-                            
-                },
-            ],
+            
             attributes : { 
                 exclude : ["createdAt", "updatedAt", "userId", "orderId"]
             },
