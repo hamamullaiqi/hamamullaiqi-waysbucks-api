@@ -119,7 +119,7 @@ exports.login = async (req,res) => {
             })
         }
 
-        const isValid = bcrypt.compare(req.body.password, userExist.password)
+        const isValid = await bcrypt.compare(req.body.password, userExist.password)
 
         if(!isValid){
             return res.status(400).send({

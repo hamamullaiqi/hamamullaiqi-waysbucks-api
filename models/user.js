@@ -18,7 +18,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
       user.hasMany(models.transaction, {
-        as: "buyer",
+        as: "buyer_transaction",
+        foreignKey: {
+          name: "id_user",
+        },
+      });
+
+      user.hasMany(models.order_list, {
+        as: "buyer_order",
         foreignKey: {
           name: "id_user",
         },
