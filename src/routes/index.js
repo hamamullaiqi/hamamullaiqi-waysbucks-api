@@ -14,7 +14,10 @@ const { uploadFile } = require('../middlewares/uploadFile')
 
 const { getToppings, getTopping, addTopping, updateTopping, deleteTopping } = require('../controllers/topping')
 const { getProfiles, getProfile, addProfile } = require('../controllers/profile')
-const { getTransactions, getTransaction } = require('../controllers/transaction')
+
+const { getOrderLists, addOrderList, getOrderList, deleteOrderList } = require('../controllers/order_list')
+const { addOrderToppings } = require('../controllers/order_topping')
+
 
 
 
@@ -59,9 +62,19 @@ router.post("/profile/:id", auth, uploadFile("image"), addProfile)
 
 //router transaction
 
-router.get("/transactions/:id", auth, getTransactions)
-router.get("/transaction/:id", auth, getTransaction)
+// router.get("/transactions/:id", auth, getTransactions)
+// router.get("/transaction/:id", auth, getTransaction)
 
+
+
+//router order list
+router.get("/order-lists", auth, getOrderLists)
+router.get("/order-list/:id", auth, getOrderList )
+router.delete("/order-list/:id", auth, deleteOrderList)
+router.post("/order-list", auth, addOrderList)
+
+//order-topping
+// router.post("/order-topping", auth, addOrderToppings)
 
 
 

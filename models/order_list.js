@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       }); 
 
-      order_list.belongsTo(models.transaction, {
+      order_list.hasMany(models.transaction, {
         as: "order",
         foreignKey: {
           name: "id_order",
@@ -32,12 +32,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      order_list.belongsTo(models.topping, {
+      order_list.belongsToMany(models.topping, {
         as: "toppings",
-        foreignKey: {
-          name: "id_topping",
+        through: {
+          model: "order_topping",
+          as: "bridge"
         },
-      });
+        foreignKey: "id_order_toping"
+
+      })
 
       
 

@@ -235,11 +235,6 @@ exports.deleteProduct = async (req, res) => {
 
         removeImage(data.image)
 
-        
-        
-
-        
-
         const deleteData = await product.destroy({
             where : {
                 id,

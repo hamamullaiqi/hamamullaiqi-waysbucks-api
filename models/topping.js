@@ -12,12 +12,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       
-        topping.hasMany(models.order_list, {
-          as: "toppings",
-          foreignKey: {
-            name: "id_topping",
-          },
-        });
+      topping.belongsToMany(models.order_list, {
+        as: "order_lists",
+        through: {
+          model: "order_topping",
+          as: "bridge"
+        },
+        foreignKey: "id_toppings"
+
+      })
 
         
   
