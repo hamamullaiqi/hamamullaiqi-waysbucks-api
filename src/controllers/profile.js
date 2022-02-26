@@ -52,34 +52,43 @@ exports.getProfile = async (req, res) => {
 
         
 
-        const dataProfile = await profile.findOne({
+        let dataProfile = await profile.findOne({
             where :{
-                id
+                id_user : id
             },
-            include : {
-                model: user,
-                as: "user",
-                attributes : {
-                    exclude : ["createdAt", "updatedAt", "password"]
-                }
-            },
-            
             attributes : {
                 exclude : ["createdAt", "updatedAt", "idUser"]
-            }
+            },
+
+            include : [
+
+                {
+                    model: user,
+                    as: "user",
+                    attributes : {
+                        exclude : ["createdAt", "updatedAt", "password"]
+                    }
+                },
+                
+               
+            ] 
         }) 
 
-        if(!dataProfile.id) 
-        return res.status(404).send({
-            message : "Profile Not Found"
-        })
+        // if(!dataProfile) 
+        // return res.status(404).send({
+        //     message : "Profile Not Found"
+        // })
     
-        
+        dataProfile = JSON.parse(JSON.stringify(dataProfile))
+
+        dataProfile = {
+            ...dataProfile, 
+            image: process.env.FILE_PATH + dataProfile.image }
     
         res.send({
             status : "success",
             message : `Profile by id : ${id}`,
-            profile : {
+            data : {
                 dataProfile
             }
         })

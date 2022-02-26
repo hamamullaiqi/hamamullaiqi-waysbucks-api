@@ -17,7 +17,9 @@ exports.getCart = async (req, res) => {
         
     })
 
-           let idOrder =  dataCart.map((item) => item.id_order)
+           let idOrder =  dataCart.map(item =>{
+                return item.id_order
+           } )
 
 
 

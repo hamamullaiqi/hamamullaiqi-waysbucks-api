@@ -204,7 +204,7 @@ exports.addOrderList = async (req, res) => {
                     })
             })
 
-            const idOrder = newOrderList.id
+        const idOrder = newOrderList.id
 
         let dataCart = await cart.create({
             id_user : id,

@@ -1,4 +1,4 @@
-const { user } = require("../../models")
+const { user, profile } = require("../../models")
 
 
 
@@ -49,6 +49,10 @@ exports.register = async (req,res) => {
                 password : hashedPassword,
                 status : "customer",
 
+            })
+
+            const userProfile = profile.create({
+                id_user : newUser.id
             })
 
             

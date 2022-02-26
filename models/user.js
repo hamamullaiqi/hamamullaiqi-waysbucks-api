@@ -31,6 +31,13 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
+      user.hasMany(models.order_transaction, {
+        as: "user_transaction",
+        foreignKey: {
+          name: "id_user",
+        },
+      });
+
       user.belongsToMany(models.order_list, {
         as: "order_cart",
         through:{
