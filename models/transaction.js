@@ -18,12 +18,33 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      transaction.belongsTo(models.order_list, {
-        as: "order",
+      transaction.belongsToMany(models.order_list, {
+        as: "order_lists",
+        through:{
+          model: "order_transactions",
+          as: "bridge"
+        },
         foreignKey: {
-          name: "id_order",
+          name: "id_orders",
         },
       });
+
+      transaction.belongsToMany(models.topping, {
+        as: "toppings",
+        through:{
+          model: "item_topping",
+          as: "bridge"
+        },
+        foreignKey: {
+          name: "id_transaction",
+        },
+      });
+
+
+     
+
+      
+      
 
 
 
@@ -31,7 +52,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   transaction.init({
     id_user: DataTypes.INTEGER,
-    id_order: DataTypes.INTEGER,
     status: DataTypes.STRING,
     total_pay: DataTypes.INTEGER,
     attch_transaction: DataTypes.STRING,

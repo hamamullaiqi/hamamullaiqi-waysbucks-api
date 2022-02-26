@@ -16,7 +16,9 @@ const { getToppings, getTopping, addTopping, updateTopping, deleteTopping } = re
 const { getProfiles, getProfile, addProfile } = require('../controllers/profile')
 
 const { getOrderLists, addOrderList, getOrderList, deleteOrderList } = require('../controllers/order_list')
-const { addOrderToppings } = require('../controllers/order_topping')
+const { addTransation } = require('../controllers/transaction')
+const { getCart, deleteCartList } = require('../controllers/cart')
+// const { addOrderToppings } = require('../controllers/order_topping')
 
 
 
@@ -63,7 +65,7 @@ router.post("/profile/:id", auth, uploadFile("image"), addProfile)
 //router transaction
 
 // router.get("/transactions/:id", auth, getTransactions)
-// router.get("/transaction/:id", auth, getTransaction)
+router.post("/transaction/:id",  auth,uploadFile("attch_transaction"), addTransation)
 
 
 
@@ -73,8 +75,11 @@ router.get("/order-list/:id", auth, getOrderList )
 router.delete("/order-list/:id", auth, deleteOrderList)
 router.post("/order-list", auth, addOrderList)
 
-//order-topping
-// router.post("/order-topping", auth, addOrderToppings)
+//cart
+router.get("/cart/:id", auth, getCart )
+router.delete("/cart/:id", auth, deleteCartList)
+
+
 
 
 

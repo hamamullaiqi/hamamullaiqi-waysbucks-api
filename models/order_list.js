@@ -18,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       }); 
 
-      order_list.hasMany(models.transaction, {
-        as: "order",
-        foreignKey: {
-          name: "id_order",
-        },
-      });
+      // order_list.hasMany(models.transaction, {
+      //   as: "order",
+      //   foreignKey: {
+      //     name: "id_order",
+      //   },
+      // });
 
       order_list.belongsTo(models.product, {
         as: "product",
@@ -41,6 +41,28 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "id_order_toping"
 
       })
+
+      order_list.belongsToMany(models.transaction, {
+        as: "transactions",
+        through:{
+          model: "order_transactions",
+          as: "bridge"
+        },
+        foreignKey: {
+          name: "id_transaction",
+        },
+      });
+
+      order_list.belongsToMany(models.user, {
+        as: "buyer_cart",
+        through:{
+          model: "cart",
+          as: "bridge"
+        },
+        foreignKey: {
+          name: "id_user",
+        },
+      });
 
       
 

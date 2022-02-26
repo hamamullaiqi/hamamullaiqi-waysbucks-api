@@ -1,4 +1,5 @@
-const { order_list, user, product, topping, order_topping } = require("../../models")
+
+const { order_list, user, product, topping, order_topping, cart } = require("../../models")
 
 
 
@@ -86,8 +87,6 @@ exports.getOrderLists = async (req, res) => {
     }
 }
 exports.getOrderList = async (req, res) => {
-
-
     try {
         
         const { id } = req.params
@@ -127,7 +126,7 @@ exports.getOrderList = async (req, res) => {
                   }
                 },
                 attributes: {
-                  exclude: ["createdAt", "updatedAt", "id",],
+                  exclude: ["createdAt", "updatedAt",],
                 },
             }
         ],
@@ -179,6 +178,8 @@ exports.addOrderList = async (req, res) => {
 
     try {
 
+        const {id} = req.user
+
         let dataCreate = req.body
         
         console.log(dataCreate);
@@ -202,6 +203,13 @@ exports.addOrderList = async (req, res) => {
                         
                     })
             })
+
+            const idOrder = newOrderList.id
+
+        let dataCart = await cart.create({
+            id_user : id,
+            id_order: idOrder
+        })
 
         res.send({
             status: 'success',
