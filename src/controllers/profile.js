@@ -23,10 +23,10 @@ exports.getProfiles = async (req, res) => {
             
         }) 
     
-        if(dataProfiles == "") 
-        return res.status(404).send({
-            message : "Profiles Not Found"
-        })
+        // if(dataProfiles == "") 
+        // return res.status(404).send({
+        //     message : "Profiles Not Found"
+        // })
     
         res.send({
             status : "success",
@@ -82,8 +82,8 @@ exports.getProfile = async (req, res) => {
         dataProfile = JSON.parse(JSON.stringify(dataProfile))
 
         dataProfile = {
-            ...dataProfile, 
-            image: process.env.FILE_PATH + dataProfile.image }
+            ...dataProfile, image: process.env.FILE_PATH + dataProfile.image }
+            
     
         res.send({
             status : "success",

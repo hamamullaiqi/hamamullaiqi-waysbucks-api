@@ -17,6 +17,20 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_user",
         },
       });
+
+      order_transaction.belongsTo(models.transaction, {
+        as: "transactions",
+        foreignKey: {
+          name: "id_transaction",
+        },
+      });
+
+      order_transaction.belongsTo(models.order_list, {
+        as: "order_lists",
+        foreignKey: {
+          name: "id_orders",
+        },
+      });
     }
   }
   order_transaction.init({

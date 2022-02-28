@@ -58,7 +58,7 @@ router.delete("/topping/:id", auth, deleteTopping)
 
 // router.get("/profiles", auth, getProfiles)
 router.get("/profile/:id", auth, getProfile)
-router.post("/profile/:id", auth, uploadFile("image"), addProfile)
+router.post("/profile/:id", auth, addProfile)
 
 
 

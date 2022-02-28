@@ -52,7 +52,8 @@ exports.register = async (req,res) => {
             })
 
             const userProfile = profile.create({
-                id_user : newUser.id
+                id_user : newUser.id,
+                
             })
 
             

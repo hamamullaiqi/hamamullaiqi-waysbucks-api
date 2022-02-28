@@ -18,6 +18,13 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
+      transaction.hasMany(models.order_transaction, {
+        as: "order_transaction",
+        foreignKey: {
+          name: "id_transaction",
+        },
+      });
+
       transaction.belongsToMany(models.order_list, {
         as: "order_lists",
         through:{
