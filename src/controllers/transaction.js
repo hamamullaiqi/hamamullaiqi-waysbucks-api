@@ -163,15 +163,17 @@ exports.getOrderTransaction = async (req, res) => {
     }
 }
 
+
+
 exports.getTransaction = async (req, res) => {
-    const path = process.env.PATH_FILE;
+    
     try {
         
         const { id } = req.params
 
         let dataTransaction = await transaction.findAll({
             where: {
-                id_user : id
+                id : id
                 
             },
 
@@ -375,6 +377,214 @@ exports.getTransaction = async (req, res) => {
         })
     }
 }
+
+
+exports.getTransactions = async (req, res) => {
+    
+    try {
+        
+
+        let dataTransaction = await transaction.findAll({
+            include : 
+                {
+                    model: order_transaction,
+                    as: "order_transaction",
+                    
+                    attributes: {
+                        exclude : ["createdAt", "updatedAt"]
+
+                    },
+                    include: [
+                        {
+                            model: order_list,
+                            as: "order_lists",
+                            
+                            attributes: {
+                                exclude : ["createdAt", "updatedAt"]
+                            },
+                            include : [
+                                {
+                                
+                                    model: product,
+                                    as: "product",
+                                    attributes : {
+                                        exclude : ["createdAt", "updatedAt"]
+                                    }
+                       
+                            },
+                            {
+                                model: topping,
+                                as: "toppings",
+                                throught: {
+                                  model: order_topping,
+                                  as: "bridge",
+                                  attributes: {
+                                    exclude : ["createdAt", "updatedAt"]
+                
+                                  }
+                                },
+                                attributes: {
+                                  exclude: ["createdAt", "updatedAt",],
+                                },
+                            },
+                            
+        
+                            ]
+                        }
+                    ]
+                    
+                    
+                },
+            
+
+            attributes : {
+                exclude : ["createdAt", "updatedAt"]
+            }
+
+        })
+
+        let idTransaction =  dataTransaction.map(item =>{
+            // console.log(item.id);    
+            return item.id
+       } )
+
+       const transactionList = await order_transaction.findAll({
+        where: {
+            // id_user : id,
+            id_transaction : idTransaction
+        },
+
+        attributes : {
+            exclude : ["createdAt", "updatedAt"]
+        },
+
+    })
+
+    let idOrder =  transactionList.map(item =>{
+        // console.log(item);
+        return item.id_orders
+   } )
+       
+
+
+       let orderList = await order_list.findAll({
+        where: {
+            // id_user : id,
+            id : idOrder
+        },
+        attributes : {
+            exclude : ["createdAt", "updatedAt", "id_user", "id_product", "id_topping"]
+        },
+    
+                    include : [ 
+                    // {
+                    //     model: user,
+                    //     as: "buyer",
+                    //     attributes : {
+                    //         exclude : ["createdAt", "updatedAt", "password", "status"]
+                    //     }
+                    // },
+                    {
+                        model: product,
+                        as: "product",
+                        attributes : {
+                            exclude : ["createdAt", "updatedAt"]
+                        }
+                    },
+                    {
+                        model: topping,
+                        as: "toppings",
+                        throught: {
+                        model: order_topping,
+                        as: "bridge",
+                        attributes: {
+                            exclude : ["createdAt", "updatedAt"]
+
+                        }
+                        },
+                        attributes: {
+                        exclude: ["createdAt", "updatedAt",],
+                        },
+                    }
+                ],
+            })
+
+            
+
+           
+    
+                
+
+            orderList = JSON.parse(JSON.stringify(orderList));
+
+            orderList = orderList.map((item) => {
+            return {
+                ...item,
+                product: {
+                ...item.product,
+                image: process.env.FILE_PATH + item.product.image,
+                },
+            };
+            });
+
+
+            dataTransaction = JSON.parse(JSON.stringify(dataTransaction));
+            
+
+            
+            dataTransaction = dataTransaction.map((item) => {
+                // console.log(item);
+                let orderTransataction = item.order_transaction.map(order => {
+                    return {
+                        ...order,
+                        order_lists : {
+                            ...order.order_lists,
+                            product: {
+                                ...order.order_lists.product,
+                                image: process.env.FILE_PATH + order.order_lists.product.image,
+                                },
+                        }
+                        
+                    };
+                    });
+                
+            return {
+
+                        ...item,
+                        attch_transaction: process.env.FILE_PATH + item.attch_transaction,
+                        order_transaction : orderTransataction,
+                        
+                            
+
+                        
+                }
+            })
+
+        
+
+           
+
+        
+        res.send({
+            status : "success",
+            data : {
+                dataTransaction  
+                
+                // transactionList
+                
+            },
+            
+           
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
 exports.addTransation = async (req, res) => {
 
     try {
@@ -390,7 +600,7 @@ exports.addTransation = async (req, res) => {
             ...dataCreate,
             id_user : id,
             attch_transaction : req.file.filename,
-            status: "pending accept"
+            status: "Pending Accept"
  
         }) 
 
@@ -444,4 +654,52 @@ exports.addTransation = async (req, res) => {
     }
         
 }
+
+
+exports.updateTransaction= async (req, res) => {
+    try {
+
+        const { id } = req.params
+
+        const dataUpdate = {
+            status : req.body.status
+        }
+
+        const dataTransaction = await transaction.update(dataUpdate, {
+            where : {
+                id
+            },
+            ...dataUpdate
+            
+        }) 
+        
+       
+        
+
+         
+
+        
+
+
+        
+
+        res.send({
+            status : "success",
+            message : `Update product by id: ${id} success`,
+            data : {
+                dataTransaction
+            }
+        })
+        
+    } catch (error) {
+
+        console.log(error);
+        res.status(500).send({
+            status: "failed",
+            message: "Server Error",
+        });
+        
+    }
+}
+
 

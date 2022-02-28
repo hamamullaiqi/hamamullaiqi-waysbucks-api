@@ -132,7 +132,7 @@ exports.deleteCartList = async (req, res) => {
 
 
             const idItem = item
-            console.log(item);
+            // console.log(item);
             
             await cart.destroy({
                 where: {
