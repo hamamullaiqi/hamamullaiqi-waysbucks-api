@@ -220,10 +220,10 @@ exports.deleteProduct = async (req, res) => {
             },
             
         }) 
-        if(!data)
-        return res.status(404).send({
-            message : "Product Not Found"
-        })
+        // if(!data)
+        // return res.status(404).send({
+        //     message : "Product Not Found"
+        // })
 
         const removeImage = (filePath)=> {
             //menggabungkan direktori controller , uploads dan nama file product

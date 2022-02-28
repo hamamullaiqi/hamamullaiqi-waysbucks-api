@@ -11,10 +11,10 @@ exports.getToppings = async (req, res) => {
             }
         })
 
-        if(dataToppings == "")
-        return res.status(404).send({
-            message : "Toping Not Found"
-        })
+        // if(dataToppings == "")
+        // return res.status(404).send({
+        //     message : "Toping Not Found"
+        // })
 
         dataToppings = JSON.parse(JSON.stringify(dataToppings))
 
@@ -219,10 +219,10 @@ exports.deleteTopping = async (req, res) => {
             },
             
         }) 
-        if(!dataTopping)
-        return res.status(404).send({
-            message : "Topping Not Found"
-        })
+        // if(!dataTopping)
+        // return res.status(404).send({
+        //     message : "Topping Not Found"
+        // })
 
         const removeImage = (filePath)=> {
             //menggabungkan direktori controller , uploads dan nama file Topping
@@ -250,7 +250,7 @@ exports.deleteTopping = async (req, res) => {
        
 
         res.send({
-            status : "seccess",
+            status : "success",
             message : `Delete Topping by id : ${id}`,
             data : {
                 id: dataTopping.id

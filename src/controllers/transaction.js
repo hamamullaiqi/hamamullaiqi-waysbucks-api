@@ -173,6 +173,220 @@ exports.getTransaction = async (req, res) => {
 
         let dataTransaction = await transaction.findAll({
             where: {
+                id_user : id
+                
+            },
+
+            include : 
+                {
+                    model: order_transaction,
+                    as: "order_transaction",
+                    
+                    attributes: {
+                        exclude : ["createdAt", "updatedAt"]
+
+                    },
+                    include: [
+                        {
+                            model: order_list,
+                            as: "order_lists",
+                            
+                            attributes: {
+                                exclude : ["createdAt", "updatedAt"]
+                            },
+                            include : [
+                                {
+                                
+                                    model: product,
+                                    as: "product",
+                                    attributes : {
+                                        exclude : ["createdAt", "updatedAt"]
+                                    }
+                       
+                            },
+                            {
+                                model: topping,
+                                as: "toppings",
+                                throught: {
+                                  model: order_topping,
+                                  as: "bridge",
+                                  attributes: {
+                                    exclude : ["createdAt", "updatedAt"]
+                
+                                  }
+                                },
+                                attributes: {
+                                  exclude: ["createdAt", "updatedAt",],
+                                },
+                            },
+                            
+        
+                            ]
+                        }
+                    ]
+                    
+                    
+                },
+            
+
+            attributes : {
+                exclude : ["createdAt", "updatedAt"]
+            }
+
+        })
+
+        let idTransaction =  dataTransaction.map(item =>{
+            console.log(item.id);
+            return item.id
+       } )
+
+       const transactionList = await order_transaction.findAll({
+        where: {
+            // id_user : id,
+            id_transaction : idTransaction
+        },
+
+        attributes : {
+            exclude : ["createdAt", "updatedAt"]
+        },
+
+    })
+
+    let idOrder =  transactionList.map(item =>{
+        console.log(item);
+        return item.id_orders
+   } )
+       
+
+
+       let orderList = await order_list.findAll({
+        where: {
+            // id_user : id,
+            id : idOrder
+        },
+        attributes : {
+            exclude : ["createdAt", "updatedAt", "id_user", "id_product", "id_topping"]
+        },
+    
+                    include : [ 
+                    // {
+                    //     model: user,
+                    //     as: "buyer",
+                    //     attributes : {
+                    //         exclude : ["createdAt", "updatedAt", "password", "status"]
+                    //     }
+                    // },
+                    {
+                        model: product,
+                        as: "product",
+                        attributes : {
+                            exclude : ["createdAt", "updatedAt"]
+                        }
+                    },
+                    {
+                        model: topping,
+                        as: "toppings",
+                        throught: {
+                        model: order_topping,
+                        as: "bridge",
+                        attributes: {
+                            exclude : ["createdAt", "updatedAt"]
+
+                        }
+                        },
+                        attributes: {
+                        exclude: ["createdAt", "updatedAt",],
+                        },
+                    }
+                ],
+            })
+
+            
+
+           
+    
+                
+
+            orderList = JSON.parse(JSON.stringify(orderList));
+
+            orderList = orderList.map((item) => {
+            return {
+                ...item,
+                product: {
+                ...item.product,
+                image: process.env.FILE_PATH + item.product.image,
+                },
+            };
+            });
+
+
+            dataTransaction = JSON.parse(JSON.stringify(dataTransaction));
+            
+
+            
+            dataTransaction = dataTransaction.map((item) => {
+                // console.log(item);
+                let orderTransataction = item.order_transaction.map(order => {
+                    return {
+                        ...order,
+                        order_lists : {
+                            ...order.order_lists,
+                            product: {
+                                ...order.order_lists.product,
+                                image: process.env.FILE_PATH + order.order_lists.product.image,
+                                },
+                        }
+                        
+                    };
+                    });
+                
+            return {
+
+                        ...item,
+                        attch_transaction: process.env.FILE_PATH + item.attch_transaction,
+                        order_transaction : orderTransataction,
+                        
+                            
+
+                        
+                }
+            })
+
+        
+
+           
+
+        
+        res.send({
+            status : "success",
+            data : {
+                dataTransaction  
+                
+                // transactionList
+                
+            },
+            
+           
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            status: 'failed',
+            message: 'Server Error'
+        })
+    }
+}
+
+
+exports.getTransactionUser = async (req, res) => {
+    
+    try {
+        
+        const { id } = req.params
+
+        let dataTransaction = await transaction.findAll({
+            where: {
                 id : id
                 
             },
